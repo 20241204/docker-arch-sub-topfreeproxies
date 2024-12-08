@@ -1,5 +1,5 @@
 # TopFreeProxies
-[![GitHub Workflow Status](https://github.com/20241204/docker-arch-sub-topfreeproxies/actions/workflows/docker-image.yml/badge.svg)](https://github.com/20241204/docker-arch-sub-topfreeproxies/actions/workflows/docker-image.yml) 
+[![GitHub Workflow Status](https://github.com/20241204/docker-arch-sub-topfreeproxies/actions/workflows/actions.yml/badge.svg)](https://github.com/20241204/docker-arch-sub-topfreeproxies/actions/workflows/actions.yml) 
 
 ![Watchers](https://img.shields.io/github/watchers/20241204/docker-arch-sub-topfreeproxies) ![Stars](https://img.shields.io/github/stars/20241204/docker-arch-sub-topfreeproxies) ![Forks](https://img.shields.io/github/forks/20241204/docker-arch-sub-topfreeproxies) ![Vistors](https://visitor-badge.laobi.icu/badge?page_id=20241204.docker-arch-sub-topfreeproxies) ![LICENSE](https://img.shields.io/badge/license-CC%20BY--SA%204.0-green.svg)
 
