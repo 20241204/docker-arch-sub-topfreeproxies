@@ -226,16 +226,16 @@ sed -i "s;share_link\['name'\];str(share_link\['name'\]);g" parsers/clash2base64
 grep -i "str(share_link\['name'\])" parsers/clash2base64.py
 
 # 使用命令替换 sing-box 模板配置文件端口 http: 7897 socks: 7898 mixed: 7899 controller: 7900
-#perl -i -pe 'BEGIN{undef $/;} s/,\n    {\n      "type": "mixed",\n      "listen": "127.0.0.1",\n      "listen_port": 2080,\n      "sniff": true,\n      "users": \[\]\n    }/,\n    {\n      "type": "http",\n      "listen": "0.0.0.0",\n      "listen_port": 7897,\n      "sniff": true,\n      "users": \[\]\n    },\n    {\n      "type": "socks",\n      "listen": "0.0.0.0",\n      "listen_port": 7898,\n      "sniff": true,\n      "users": \[\]\n    },\n    {\n      "type": "mixed",\n      "listen": "0.0.0.0",\n      "listen_port": 7899,\n      "sniff": true,\n      "users": \[\]\n    }/smg' config_template/config_template_groups_rule_set_tun.json
-#sed -i 's;127.0.0.1;0.0.0.0;g;s;0.0.0.0:9090;:7900;g;s;"strict_route": true;"strict_route": false;g;s;_port": 2080;_port": 7897;g' config_template/config_template_groups_rule_set_tun.json
-cp -fv ../config_template_groups_rule_set_tun.json config_template/config_template_groups_rule_set_tun.json
+#perl -i -pe 'BEGIN{undef $/;} s/,\n    {\n      "type": "mixed",\n      "listen": "127.0.0.1",\n      "listen_port": 2080,\n      "sniff": true,\n      "users": \[\]\n    }/,\n    {\n      "type": "http",\n      "listen": "0.0.0.0",\n      "listen_port": 7897,\n      "sniff": true,\n      "users": \[\]\n    },\n    {\n      "type": "socks",\n      "listen": "0.0.0.0",\n      "listen_port": 7898,\n      "sniff": true,\n      "users": \[\]\n    },\n    {\n      "type": "mixed",\n      "listen": "0.0.0.0",\n      "listen_port": 7899,\n      "sniff": true,\n      "users": \[\]\n    }/smg' config_template/sb-config-1.11.json
+#sed -i 's;127.0.0.1;0.0.0.0;g;s;0.0.0.0:9090;:7900;g;s;"strict_route": true;"strict_route": false;g;s;_port": 2080;_port": 7897;g' config_template/sb-config-1.11.json
+cp -fv ../sb-config-1.11.json config_template/sb-config-1.11.json
 
 # 写入订阅解析配置
 cp -fv ../providers.json providers.json
 
 # 新增 singbox 转换生成
 # 执行转换项目程序
-echo -e '1\n' | python main.py
+echo -e '4\n' | python main.py
 
 cd ..
 
