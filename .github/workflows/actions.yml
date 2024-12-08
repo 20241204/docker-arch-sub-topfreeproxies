@@ -1,0 +1,88 @@
+name: Docker Image Build
+
+# 配置触发条件
+on:
+  # Triggers the workflow on push or pull request events but only for the "master" branch
+  # Runs every 5 minutes.
+  # Runs at 00:00 UTC every day.
+  # Actions schedules run at most every 5 minutes.
+  # schedule:
+    # - cron: '*/5 * * * *'
+    # - cron: '55 */8 * * *'
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+# 自定义环境变量，有风险危险调用，有什么私密变量请不要定义在这里
+env:
+  REGISTRY: ghcr.io
+  IMAGE: ${{ github.actor }}/docker-arch-sub-topfreeproxies
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    # 配置 QEMU 
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v3
+    # 配置 buildx 用于多架构镜像的构建
+    - name: Set up Docker Buildx
+      id: buildx
+      uses: docker/setup-buildx-action@v3
+    # 打印 builder 支持信息
+    - name: Inspect builder
+      run: |
+        echo "Name:      ${{ steps.buildx.outputs.name }}"
+        echo "Endpoint:  ${{ steps.buildx.outputs.endpoint }}"
+        echo "Status:    ${{ steps.buildx.outputs.status }}"
+        echo "Flags:     ${{ steps.buildx.outputs.flags }}"
+        echo "Platforms: ${{ steps.buildx.outputs.platforms }}"
+    # 登录 docker 仓库
+    - name: Login to GitHub Container Registry
+      uses: docker/login-action@v3
+      with:
+        registry: ${{ env.REGISTRY }}
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    # 缓存 Docker 镜像以加速构建
+    - name: Cache Docker layers
+      uses: actions/cache@v4
+      with:
+        path: /tmp/.buildx-cache
+        key: ${{ runner.os }}-buildx-${{ github.sha }}
+        restore-keys: |
+          ${{ runner.os }}-buildx-     
+    # 根据输入自动生成 tag 和 label 等数据
+    - name: Docker meta
+      id: meta
+      uses: docker/metadata-action@v5
+      with:
+        images: ${{ env.REGISTRY }}/${{ env.IMAGE }}
+        tags: |
+          # set latest tag for master branch
+          type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'master') }}
+    # 构建并上传镜像到仓库
+    - name: Build and push
+      uses: docker/build-push-action@v6
+      id: docker-arch-sub-topfreeproxies
+      with:
+        provenance: false
+        context: .
+        file: ./Dockerfile
+        builder: ${{ steps.buildx.outputs.name }}
+        platforms: linux/amd64,linux/arm64/v8
+        push: ${{ github.event_name != 'pull_request' }}
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
+        cache-from: type=local,src=/tmp/.buildx-cache
+        cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
+    - # Temp fix 修复 docker 缓存越来越大的问题
+      # https://github.com/docker/build-push-action/issues/252
+      # https://github.com/moby/buildkit/issues/1896
+      name: Move cache
+      run: |
+        rm -rf /tmp/.buildx-cache
+        mv /tmp/.buildx-cache-new /tmp/.buildx-cache 
+    # 打印镜像信息
+    - name: Inspect image
+      run: |
+        docker buildx imagetools inspect \
+        ${{ env.REGISTRY }}/$(echo ${{ env.IMAGE }} | tr A-Z a-z):${{ steps.meta.outputs.version }}

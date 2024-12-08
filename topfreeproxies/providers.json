@@ -1,0 +1,76 @@
+{
+    "subscribes": [
+        {
+            "url": "URL",
+            "tag": "tag_1",
+            "enabled": false,
+            "emoji": 1,
+            "subgroup": "",
+            "prefix": "",
+            "User-Agent": "v2rayng"
+        },
+        {
+            "url": "URL",
+            "tag": "tag_2",
+            "enabled": false,
+            "emoji": 0,
+            "subgroup": "命名/named",
+            "prefix": "❤️",
+            "User-Agent": "clashmeta"
+        },
+        {
+            "url": "https://www.freev2raynode.com/uploads/2024/12/20241207.json",
+            "tag": "freev2raynode",
+            "enabled": true,
+            "emoji": 1,
+            "subgroup": "freev2raynode",
+            "prefix": "",
+            "User-Agent": "sing-box"
+        },
+        {
+            "url": "https://nexthiddify.github.io/uploads/2024/12/20241207.json",
+            "tag": "nexthiddify.github.io",
+            "enabled": true,
+            "emoji": 1,
+            "subgroup": "nexthiddify.github.io",
+            "prefix": "",
+            "User-Agent": "sing-box"
+        },
+        {
+            "url": "https://clash-meta.github.io/uploads/2024/12/20241207.json",
+            "tag": "clash-meta.github.io",
+            "enabled": true,
+            "emoji": 1,
+            "subgroup": "clash-meta.github.io",
+            "prefix": "",
+            "User-Agent": "sing-box"
+        },
+        {
+            "url": "http://127.0.0.1:8000/Eternity.yaml",
+            "tag": "local-docker-arch-custom-ubuntu-topfreeproxies",
+            "enabled": true,
+            "emoji": 1,
+            "subgroup": "local-docker-arch-custom-ubuntu-topfreeproxies",
+            "prefix": "",
+            "User-Agent": "clashmeta"
+        },
+        {
+            "url": "http://127.0.0.1:8000/nekowarp.yaml",
+            "tag": "nekowarp",
+            "enabled": true,
+            "emoji": 1,
+            "subgroup": "nekowarp",
+            "prefix": "",
+            "User-Agent": "clashmeta"
+        }
+    ],
+    "auto_set_outbounds_dns": {
+        "proxy": "",
+        "direct": ""
+    },
+    "save_config_path": "../singbox-config.json",
+    "auto_backup": false,
+    "exclude_protocol": "ssr",
+    "config_template": "",
+    "Only-nodes": false
+}
