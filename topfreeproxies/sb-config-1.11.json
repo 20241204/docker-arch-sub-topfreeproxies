@@ -1,0 +1,382 @@
+{
+  "log": {
+    "level": "debug",
+    "timestamp": true
+  },
+  "dns": {
+    "servers": [
+      {
+        "tag": "cloudflare",
+        "address": "tls://1.0.0.1",
+        "detour": "direct"
+      },
+      {
+        "tag": "local",
+        "address": "119.29.29.29",
+        "detour": "direct"
+      },
+      {
+        "tag": "sbdns",
+        "address": "https://1.0.0.1/dns-query",
+        "address_resolver": "local",
+        "detour": "direct"
+      },
+      {
+        "tag": "block",
+        "address": "rcode://success"
+      }
+    ],
+    "rules": [
+      {
+        "rule_set": ["geosite-category-pt","geosite-category-public-tracker"],
+        "server": "local"
+      },
+      {
+        "domain_suffix": "beijing.gov.cn",
+        "server": "local",
+        "rewrite_ttl": 300
+      },
+      {
+        "outbound": "any",
+        "server": "local",
+        "rewrite_ttl": 300
+      },
+      {
+        "rule_set": "geosite-cn",
+        "server": "local"
+      },
+      {
+        "rule_set": "geosite-cn",
+        "invert": true,
+        "server": "sbdns",
+        "rewrite_ttl": 900
+      }
+    ],
+    "final": "cloudflare",
+    "strategy": "ipv4_only"
+  },
+  "inbounds": [
+    {
+      "type": "tun",
+      "tag": "tun-in",
+      "mtu": 9000,
+      "address": [
+        "172.19.0.1/30",
+        "fdfe:dcba:9876::1/126"
+      ],
+      "auto_route": true,
+      "stack": "mixed",
+      "sniff_override_destination": true,
+      "domain_strategy": "prefer_ipv4"
+    },
+    {
+      "type": "http",
+      "tag": "http-in",
+      "listen": "0.0.0.0",
+      "listen_port": 7897,
+      "sniff_override_destination": true,
+      "domain_strategy": "prefer_ipv4"
+    },
+    {
+      "type": "socks",
+      "tag": "socks-in",
+      "listen": "0.0.0.0",
+      "listen_port": 7898,
+      "sniff_override_destination": true,
+      "domain_strategy": "prefer_ipv4"
+    },
+    {
+      "type": "mixed",
+      "tag": "mixed-in",
+      "listen": "0.0.0.0",
+      "listen_port": 7899,
+      "sniff_override_destination": true,
+      "domain_strategy": "prefer_ipv4"
+    }
+  ],
+  "outbounds": [
+    {
+      "type": "selector",
+      "tag": "Proxy",
+      "outbounds": [
+        "auto",
+        "auto-tw",
+        "auto-sg",
+        "{all}",
+        "auto-uk",
+        "direct"
+      ],
+      "default": "auto"
+    },
+    {
+      "type": "selector",
+      "tag": "Scholar",
+      "outbounds": [
+        "auto-tw",
+        "auto-uk",
+        "direct"
+      ]
+    },
+    {
+      "type": "selector",
+      "tag": "Express",
+      "outbounds": [
+        "auto",
+        "auto-tw",
+        "auto-uk",
+        "direct"
+      ],
+      "default": "auto"
+    },
+    {
+      "type": "selector",
+      "tag": "Netflix",
+      "outbounds": [
+        "auto-tw",
+        "auto-uk",
+        "direct"
+      ],
+      "default": "auto-tw"
+    },
+    {
+      "type": "selector",
+      "tag": "Manually",
+      "outbounds": [
+        "auto-sg",
+        "auto-uk",
+        "direct"
+      ]
+    },
+    {
+      "type": "urltest",
+      "tag": "auto",
+      "outbounds": [
+        "{all}"
+      ],
+      "filter":[
+        {"action":"exclude","keywords":["网站|地址|剩余|过期|时间|有效"]}
+      ],
+      "url": "https://www.gstatic.com/generate_204",
+      "interval": "3m0s",
+      "tolerance": 50
+    },
+    {
+      "type": "urltest",
+      "tag": "auto-uk",
+      "outbounds": [
+        "{all}"
+      ],
+      "filter":[
+        {"action":"include","keywords":["🇬🇧|GB|gb|UK|uk|英国|英|England"]}
+      ],
+      "url": "https://www.gstatic.com/generate_204",
+      "interval": "3m0s",
+      "tolerance": 50
+    },
+    {
+      "type": "urltest",
+      "tag": "auto-sg",
+      "outbounds": [
+        "{all}"
+      ],
+      "filter":[
+        {"action":"include","keywords":["🇸🇬|SG|sg|新加坡|狮|Singapore"]}
+      ],
+      "url": "https://www.gstatic.com/generate_204",
+      "interval": "3m0s",
+      "tolerance": 50
+    },
+    {
+      "type": "urltest",
+      "tag": "auto-tw",
+      "outbounds": [
+        "{all}"
+      ],
+      "filter":[
+        {"action":"include","keywords":["🇹🇼|TW|tw|台湾|臺灣|台|Taiwan"]}
+      ],
+      "url": "https://www.gstatic.com/generate_204",
+      "interval": "3m0s",
+      "tolerance": 50
+    },
+    {
+      "type": "direct",
+      "tag": "direct"
+    }
+  ],
+  "route": {
+    "rules": [
+      {
+        "action": "sniff"
+      },
+      {
+        "protocol": "dns",
+        "action": "hijack-dns"
+      },
+      {
+        "rule_set": "geosite-cn",
+        "outbound": "direct"
+      },
+      {
+        "port": [
+          25,
+          26,
+          222,
+          465,
+          587
+        ],
+        "outbound": "direct"
+      },
+      {
+        "port": 22,
+        "outbound": "Manually"
+      },
+      {
+        "domain_suffix": "ifconfig.me",
+        "outbound": "Manually"
+      },
+      {
+        "domain_suffix": [
+          ".cn",
+          ".bilibili.com",
+          ".qq.com",
+          ".taobao.com",
+          ".jd.com",
+          ".baidu.com",
+          ".163.com"
+        ],
+        "outbound": "direct"
+      },
+      {
+        "domain_suffix": "openai.com",
+        "outbound": "Scholar"
+      },
+      {
+        "rule_set": ["geosite-google-scholar", "geosite-category-scholar-!cn"],
+        "outbound": "Scholar"
+      },
+      {
+        "rule_set": "geosite-netflix",
+        "outbound": "Netflix"
+      },
+      {
+        "rule_set": ["geosite-youtube", "geosite-category-porn","geosite-category-cryptocurrency","geosite-category-entertainment"],
+        "outbound": "Express"
+      },
+      {
+        "domain_keyword": [
+          "cdn",
+          "download"
+        ],
+        "outbound": "Express"
+      },
+      {
+        "domain_suffix": "ip.sb",
+        "outbound": "Express"
+      },
+      {
+        "ip_is_private": true,
+        "outbound": "direct"
+      },
+      {
+        "rule_set": "geoip-cn",
+        "outbound": "direct"
+      }
+    ],
+    "rule_set": [
+      {
+        "tag": "geosite-category-pt",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://mirror.ghproxy.com/https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-category-pt.srs",
+        "download_detour": "direct"
+      },
+      {
+        "tag": "geosite-category-public-tracker",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://mirror.ghproxy.com/https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-category-public-tracker.srs",
+        "download_detour": "direct"
+      },
+      {
+        "tag": "geosite-cn",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://mirror.ghproxy.com/https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-cn.srs",
+        "download_detour": "direct"
+      },
+      {
+        "tag": "geosite-google-scholar",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://mirror.ghproxy.com/https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-google-scholar.srs",
+        "download_detour": "direct"
+      },
+      {
+        "tag": "geosite-category-scholar-!cn",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://mirror.ghproxy.com/https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-category-scholar-!cn.srs",
+        "download_detour": "direct"
+      },
+      {
+        "tag": "geosite-netflix",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://mirror.ghproxy.com/https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-netflix.srs",
+        "download_detour": "direct"
+      },
+      {
+        "tag": "geosite-youtube",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://mirror.ghproxy.com/https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-youtube.srs",
+        "download_detour": "direct"
+      },
+      {
+        "tag": "geosite-category-porn",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://mirror.ghproxy.com/https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-category-porn.srs",
+        "download_detour": "direct"
+      },
+      {
+        "tag": "geosite-category-cryptocurrency",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://mirror.ghproxy.com/https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-category-cryptocurrency.srs",
+        "download_detour": "direct"
+      },
+      {
+        "tag": "geosite-category-entertainment",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://mirror.ghproxy.com/https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-category-entertainment.srs",
+        "download_detour": "direct"
+      },
+      {
+        "tag": "geoip-cn",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://mirror.ghproxy.com/https://raw.githubusercontent.com/SagerNet/sing-geoip/rule-set/geoip-cn.srs",
+        "download_detour": "direct"
+      }
+    ],
+    "auto_detect_interface": true
+  },
+  "experimental": {
+    "cache_file": {
+      "enabled": true,
+      "path": "sb.db",
+      "cache_id": "sb",
+      "store_fakeip": true
+    },
+    "clash_api": {
+      "external_controller": ":7900",
+      "external_ui": "ui",
+      "external_ui_download_url": "https://mirror.ghproxy.com/https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
+      "external_ui_download_detour": "direct",
+      "default_mode": "rule"
+    }
+  }
+}
