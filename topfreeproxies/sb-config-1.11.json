@@ -269,6 +269,7 @@
       "tag": "Apple",
       "type": "selector",
       "outbounds": [
+        "direct",
         "HongKong",
         "TaiWan",
         "Singapore",
