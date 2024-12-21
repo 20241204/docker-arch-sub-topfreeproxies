@@ -100,7 +100,7 @@
 ### 注意
    
     本项目依赖核心是 /topfreeproxies 项目目录
-    github 里的 docker-compose-amd64.yml/docker-compose-arm64.yml 之所以挂载了 /topfreeproxies 是因为 github 项目里面有这个 topfreeproxies 目录
+    github 里的 docker-compose-amd64.yml/docker-compose-arm64.yml 之所以挂载了 ./topfreeproxies 是因为 github 项目里面有这个 topfreeproxies 目录
     如果你想在本地 docker-compose 环境中运行这个项目就删掉 - ./topfreeproxies:/topfreeproxies 替换为 - ./topfreeproxies:/root/topfreeproxies
     这样你才能得到订阅文件的输出，因为我写的脚本输出目录是 /root/topfreeproxies 而在 github 里无所谓的。
     言尽于此，唉，我一直过的不好，我受够了，就说这吧。唉
