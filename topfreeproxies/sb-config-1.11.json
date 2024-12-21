@@ -4,7 +4,16 @@
     "timestamp": true
   },
   "dns": {
+    "fakeip": {
+      "enabled": true,
+      "inet4_range": "198.18.0.0/15",
+      "inet6_range": "fc00::/18"
+    },
     "servers": [
+      {
+        "tag": "fakeip",
+        "address": "fakeip"
+      },
       {
         "tag": "google",
         "address": "tls://8.8.8.8"
@@ -31,6 +40,21 @@
       }
     ],
     "rules": [
+      {
+        "query_type": [
+          "A",
+          "AAAA"
+        ],
+        "rule_set": "geosite-cn",
+        "server": "fakeip"
+      },
+      {
+        "query_type": [
+          "A",
+          "AAAA"
+        ],
+        "server": "fakeip"
+      },
       {
         "clash_mode": "global",
         "server": "google"
