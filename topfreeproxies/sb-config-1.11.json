@@ -4,11 +4,6 @@
     "timestamp": true
   },
   "dns": {
-    "fakeip": {
-      "enabled": true,
-      "inet4_range": "198.18.0.0/15",
-      "inet6_range": "fc00::/18"
-    },
     "servers": [
       {
         "tag": "google",
@@ -29,10 +24,6 @@
         "address": "https://1.0.0.1/dns-query",
         "address_resolver": "local",
         "detour": "direct"
-      },
-      {
-        "tag": "fakeip",
-        "address": "fakeip"
       },
       {
         "tag": "block",
@@ -82,21 +73,6 @@
         ],
         "server": "google",
         "client_subnet": "114.114.114.114/24"
-      },
-      {
-        "query_type": [
-          "A",
-          "AAAA"
-        ],
-        "rule_set": "geosite-cn",
-        "server": "fakeip"
-      },
-      {
-        "query_type": [
-          "A",
-          "AAAA"
-        ],
-        "server": "fakeip"
       }
     ],
     "final": "cloudflare",
