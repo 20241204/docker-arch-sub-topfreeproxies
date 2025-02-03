@@ -1,0 +1,1249 @@
+{
+  "log": {
+    "level": "debug",
+    "timestamp": true
+  },
+  "dns": {
+    "servers": [
+      {
+        "tag": "proxydns",
+        "address": "tls://8.8.8.8/dns-query",
+        "detour": "Proxy"
+      },
+      {
+        "tag": "localdns",
+        "address": "h3://223.5.5.5/dns-query",
+        "detour": "direct"
+      },
+      {
+        "tag": "dns_fakeip",
+        "address": "fakeip"
+      }
+    ],
+    "rules": [
+      {
+        "outbound": "any",
+        "server": "localdns",
+        "disable_cache": true
+      },
+      {
+        "clash_mode": "Global",
+        "server": "proxydns"
+      },
+      {
+        "clash_mode": "Direct",
+        "server": "localdns"
+      },
+      {
+        "rule_set": "geosite-cn",
+        "server": "localdns"
+      },
+      {
+        "rule_set": "geosite-geolocation-!cn",
+        "server": "proxydns"
+      },
+      {
+        "query_type": [
+          "A",
+          "AAAA"
+        ],
+        "rule_set": "geosite-geolocation-!cn",
+        "server": "dns_fakeip"
+      }
+    ],
+    "final": "proxydns",
+    "fakeip": {
+      "enabled": true,
+      "inet4_range": "198.18.0.0/15",
+      "inet6_range": "fc00::/18"
+    },
+    "independent_cache": true
+  },
+  "ntp": {
+    "enabled": true,
+    "interval": "2m0s",
+    "server": "time.apple.com",
+    "server_port": 123,
+    "detour": "direct"
+  },
+  "inbounds": [
+    {
+      "type": "tun",
+      "tag": "tun-in",
+      "address": [
+        "172.19.0.1/30",
+        "fd00::1/126"
+      ],
+      "auto_route": true,
+      "strict_route": true,
+      "stack": "mixed",
+      "sniff_override_destination": true,
+      "domain_strategy": "prefer_ipv4"
+    },
+    {
+      "type": "http",
+      "tag": "http-in",
+      "listen": "0.0.0.0",
+      "listen_port": 7897
+    },
+    {
+      "type": "socks",
+      "tag": "socks-in",
+      "listen": "0.0.0.0",
+      "listen_port": 7898
+    },
+    {
+      "type": "mixed",
+      "tag": "mixed-in",
+      "listen": "0.0.0.0",
+      "listen_port": 7899
+    }
+  ],
+  "outbounds": [
+    {
+      "type": "selector",
+      "tag": "Proxy",
+      "outbounds": [
+        "auto",
+        "{all}",
+        "direct"
+      ],
+      "default": "auto"
+    },
+    {
+      "type": "selector",
+      "tag": "Scholar",
+      "outbounds": [
+        "auto-hk",
+        "auto-uk",
+        "auto-sg",
+        "auto-tw",
+        "auto-jp",
+        "auto-us",
+        "auto-de",
+        "auto-ru",
+        "auto-kr",
+        "auto-fr",
+        "auto-ca",
+        "auto-au",
+        "auto-in",
+        "auto-nl",
+        "auto-it",
+        "Others",
+        "direct"
+      ],
+      "default": "auto-us"
+    },
+    {
+      "type": "selector",
+      "tag": "Express",
+      "outbounds": [
+        "auto-hk",
+        "auto-uk",
+        "auto-sg",
+        "auto-tw",
+        "auto-jp",
+        "auto-us",
+        "auto-de",
+        "auto-ru",
+        "auto-kr",
+        "auto-fr",
+        "auto-ca",
+        "auto-au",
+        "auto-in",
+        "auto-nl",
+        "auto-it",
+        "Others",
+        "direct"
+      ],
+      "default": "auto-us"
+    },
+    {
+      "type": "selector",
+      "tag": "Netflix",
+      "outbounds": [
+        "auto-hk",
+        "auto-uk",
+        "auto-sg",
+        "auto-tw",
+        "auto-jp",
+        "auto-us",
+        "auto-de",
+        "auto-ru",
+        "auto-kr",
+        "auto-fr",
+        "auto-ca",
+        "auto-au",
+        "auto-in",
+        "auto-nl",
+        "auto-it",
+        "Others",
+        "direct"
+      ],
+      "default": "auto-us"
+    },
+    {
+      "type": "selector",
+      "tag": "Manually",
+      "outbounds": [
+        "auto-hk",
+        "auto-uk",
+        "auto-sg",
+        "auto-tw",
+        "auto-jp",
+        "auto-us",
+        "auto-de",
+        "auto-ru",
+        "auto-kr",
+        "auto-fr",
+        "auto-ca",
+        "auto-au",
+        "auto-in",
+        "auto-nl",
+        "auto-it",
+        "Others",
+        "direct"
+      ],
+      "default": "auto-us"
+    },
+    {
+      "tag": "Telegram",
+      "type": "selector",
+      "outbounds": [
+        "auto-hk",
+        "auto-uk",
+        "auto-sg",
+        "auto-tw",
+        "auto-jp",
+        "auto-us",
+        "auto-de",
+        "auto-ru",
+        "auto-kr",
+        "auto-fr",
+        "auto-ca",
+        "auto-au",
+        "auto-in",
+        "auto-nl",
+        "auto-it",
+        "Others",
+        "direct"
+      ]
+    },
+    {
+      "tag": "Twitter",
+      "type": "selector",
+      "outbounds": [
+        "auto-hk",
+        "auto-uk",
+        "auto-sg",
+        "auto-tw",
+        "auto-jp",
+        "auto-us",
+        "auto-de",
+        "auto-ru",
+        "auto-kr",
+        "auto-fr",
+        "auto-ca",
+        "auto-au",
+        "auto-in",
+        "auto-nl",
+        "auto-it",
+        "Others",
+        "direct"
+      ]
+    },
+    {
+      "tag": "Facebook",
+      "type": "selector",
+      "outbounds": [
+        "auto-hk",
+        "auto-uk",
+        "auto-sg",
+        "auto-tw",
+        "auto-jp",
+        "auto-us",
+        "auto-de",
+        "auto-ru",
+        "auto-kr",
+        "auto-fr",
+        "auto-ca",
+        "auto-au",
+        "auto-in",
+        "auto-nl",
+        "auto-it",
+        "Others",
+        "direct"
+      ]
+    },
+    {
+      "tag": "BiliBili",
+      "type": "selector",
+      "outbounds": [
+        "direct",
+        "auto-hk",
+        "auto-uk",
+        "auto-sg",
+        "auto-tw",
+        "auto-jp",
+        "auto-us",
+        "auto-de",
+        "auto-ru",
+        "auto-kr",
+        "auto-fr",
+        "auto-ca",
+        "auto-au",
+        "auto-in",
+        "auto-nl",
+        "auto-it",
+        "Others"
+      ]
+    },
+    {
+      "tag": "Bahamut",
+      "type": "selector",
+      "outbounds": [
+        "auto-tw",
+        "Proxy"
+      ]
+    },
+    {
+      "tag": "Spotify",
+      "type": "selector",
+      "outbounds": [
+        "auto-hk",
+        "auto-uk",
+        "auto-sg",
+        "auto-tw",
+        "auto-jp",
+        "auto-us",
+        "auto-de",
+        "auto-ru",
+        "auto-kr",
+        "auto-fr",
+        "auto-ca",
+        "auto-au",
+        "auto-in",
+        "auto-nl",
+        "auto-it",
+        "Others",
+        "direct"
+      ],
+      "default": "auto-us"
+    },
+    {
+      "tag": "TikTok",
+      "type": "selector",
+      "outbounds": [
+        "auto-hk",
+        "auto-uk",
+        "auto-sg",
+        "auto-tw",
+        "auto-jp",
+        "auto-us",
+        "auto-de",
+        "auto-ru",
+        "auto-kr",
+        "auto-fr",
+        "auto-ca",
+        "auto-au",
+        "auto-in",
+        "auto-nl",
+        "auto-it",
+        "Others",
+        "direct"
+      ],
+      "default": "auto-us"
+    },
+    {
+      "tag": "Disney+",
+      "type": "selector",
+      "outbounds": [
+        "auto-hk",
+        "auto-uk",
+        "auto-sg",
+        "auto-tw",
+        "auto-jp",
+        "auto-us",
+        "auto-de",
+        "auto-ru",
+        "auto-kr",
+        "auto-fr",
+        "auto-ca",
+        "auto-au",
+        "auto-in",
+        "auto-nl",
+        "auto-it",
+        "Others",
+        "direct"
+      ]
+    },
+    {
+      "tag": "Apple",
+      "type": "selector",
+      "outbounds": [
+        "auto-hk",
+        "auto-uk",
+        "auto-sg",
+        "auto-tw",
+        "auto-jp",
+        "auto-us",
+        "auto-de",
+        "auto-ru",
+        "auto-kr",
+        "auto-fr",
+        "auto-ca",
+        "auto-au",
+        "auto-in",
+        "auto-nl",
+        "auto-it",
+        "Others",
+        "direct"
+      ]
+    },
+    {
+      "tag": "Microsoft",
+      "type": "selector",
+      "outbounds": [
+        "auto-hk",
+        "auto-uk",
+        "auto-sg",
+        "auto-tw",
+        "auto-jp",
+        "auto-us",
+        "auto-de",
+        "auto-ru",
+        "auto-kr",
+        "auto-fr",
+        "auto-ca",
+        "auto-au",
+        "auto-in",
+        "auto-nl",
+        "auto-it",
+        "Others",
+        "direct"
+      ],
+      "default": "auto-us"
+    },
+    {
+      "tag": "Games",
+      "type": "selector",
+      "outbounds": [
+        "auto-hk",
+        "auto-uk",
+        "auto-sg",
+        "auto-tw",
+        "auto-jp",
+        "auto-us",
+        "auto-de",
+        "auto-ru",
+        "auto-kr",
+        "auto-fr",
+        "auto-ca",
+        "auto-au",
+        "auto-in",
+        "auto-nl",
+        "auto-it",
+        "Others",
+        "direct"
+      ]
+    },
+    {
+      "tag": "Streaming",
+      "type": "selector",
+      "outbounds": [
+        "auto-hk",
+        "auto-uk",
+        "auto-sg",
+        "auto-tw",
+        "auto-jp",
+        "auto-us",
+        "auto-de",
+        "auto-ru",
+        "auto-kr",
+        "auto-fr",
+        "auto-ca",
+        "auto-au",
+        "auto-in",
+        "auto-nl",
+        "auto-it",
+        "Others",
+        "direct"
+      ]
+    },
+    {
+      "tag": "Global",
+      "type": "selector",
+      "outbounds": [
+        "auto-hk",
+        "auto-uk",
+        "auto-sg",
+        "auto-tw",
+        "auto-jp",
+        "auto-us",
+        "auto-de",
+        "auto-ru",
+        "auto-kr",
+        "auto-fr",
+        "auto-ca",
+        "auto-au",
+        "auto-in",
+        "auto-nl",
+        "auto-it",
+        "Others",
+        "direct"
+      ]
+    },
+    {
+      "tag": "China",
+      "type": "selector",
+      "outbounds": [
+        "direct",
+        "Proxy"
+      ]
+    },
+    {
+      "type": "urltest",
+      "tag": "auto",
+      "outbounds": [
+        "{all}"
+      ],
+      "filter": [
+        {
+          "action": "exclude",
+          "keywords": [
+            "网站|地址|剩余|过期|时间|有效"
+          ]
+        }
+      ],
+      "url": "https://www.gstatic.com/generate_204",
+      "interval": "3m0s",
+      "tolerance": 50
+    },
+    {
+      "type": "urltest",
+      "tag": "auto-hk",
+      "outbounds": [
+        "{all}"
+      ],
+      "filter": [
+        {
+          "action": "include",
+          "keywords": [
+            "🇭🇰|HK|hk|香港|港|Hong|HongKong"
+          ]
+        }
+      ],
+      "url": "https://www.gstatic.com/generate_204",
+      "interval": "3m0s",
+      "tolerance": 50
+    },
+    {
+      "type": "urltest",
+      "tag": "auto-uk",
+      "outbounds": [
+        "{all}"
+      ],
+      "filter": [
+        {
+          "action": "include",
+          "keywords": [
+            "🇬🇧|GB|gb|UK|uk|英国|英|伦敦|Britain|eng|United Kingdom"
+          ]
+        }
+      ],
+      "url": "https://www.gstatic.com/generate_204",
+      "interval": "3m0s",
+      "tolerance": 50
+    },
+    {
+      "type": "urltest",
+      "tag": "auto-sg",
+      "outbounds": [
+        "{all}"
+      ],
+      "filter": [
+        {
+          "action": "include",
+          "keywords": [
+            "🇸🇬|SG|sg|新加坡|狮|坡|Singapore"
+          ]
+        }
+      ],
+      "url": "https://www.gstatic.com/generate_204",
+      "interval": "3m0s",
+      "tolerance": 50
+    },
+    {
+      "type": "urltest",
+      "tag": "auto-tw",
+      "outbounds": [
+        "{all}"
+      ],
+      "filter": [
+        {
+          "action": "include",
+          "keywords": [
+            "🇨🇳|🇹🇼|CN|China|TW|tw|中国|台湾|臺灣|台|Taiwan"
+          ]
+        }
+      ],
+      "url": "https://www.gstatic.com/generate_204",
+      "interval": "3m0s",
+      "tolerance": 50
+    },
+    {
+      "type": "urltest",
+      "tag": "auto-jp",
+      "outbounds": [
+        "{all}"
+      ],
+      "filter": [
+        {
+          "action": "include",
+          "keywords": [
+            "🇯🇵|JP|jp|日本|日|Japan|Tokyo"
+          ]
+        }
+      ],
+      "url": "https://www.gstatic.com/generate_204",
+      "interval": "3m0s",
+      "tolerance": 50
+    },
+    {
+      "type": "urltest",
+      "tag": "auto-us",
+      "outbounds": [
+        "{all}"
+      ],
+      "filter": [
+        {
+          "action": "include",
+          "keywords": [
+            "🇺🇸|US|us|美国|美|United States|States|American"
+          ]
+        }
+      ],
+      "url": "https://www.gstatic.com/generate_204",
+      "interval": "3m0s",
+      "tolerance": 50
+    },
+    {
+      "type": "urltest",
+      "tag": "auto-de",
+      "outbounds": [
+        "{all}"
+      ],
+      "filter": [
+        {
+          "action": "include",
+          "keywords": [
+            "🇩🇪|DE|de|德国|德|Germany|German"
+          ]
+        }
+      ],
+      "url": "https://www.gstatic.com/generate_204",
+      "interval": "3m0s",
+      "tolerance": 50
+    },
+    {
+      "type": "urltest",
+      "tag": "auto-ru",
+      "outbounds": [
+        "{all}"
+      ],
+      "filter": [
+        {
+          "action": "include",
+          "keywords": [
+            "🇷🇺|RU|ru|俄罗斯|俄|Russia|Russian|Moscow"
+          ]
+        }
+      ],
+      "url": "https://www.gstatic.com/generate_204",
+      "interval": "3m0s",
+      "tolerance": 50
+    },
+    {
+      "type": "urltest",
+      "tag": "auto-kr",
+      "outbounds": [
+        "{all}"
+      ],
+      "filter": [
+        {
+          "action": "include",
+          "keywords": [
+            "🇰🇷|KR|kr|韩国|韩|Korea|Korean|Seoul"
+          ]
+        }
+      ],
+      "url": "https://www.gstatic.com/generate_204",
+      "interval": "3m0s",
+      "tolerance": 50
+    },
+    {
+      "type": "urltest",
+      "tag": "auto-fr",
+      "outbounds": [
+        "{all}"
+      ],
+      "filter": [
+        {
+          "action": "include",
+          "keywords": [
+            "🇫🇷|FR|fr|法国|法|France|French|Paris"
+          ]
+        }
+      ],
+      "url": "https://www.gstatic.com/generate_204",
+      "interval": "3m0s",
+      "tolerance": 50
+    },
+    {
+      "type": "urltest",
+      "tag": "auto-ca",
+      "outbounds": [
+        "{all}"
+      ],
+      "filter": [
+        {
+          "action": "include",
+          "keywords": [
+            "🇨🇦|CA|ca|加拿大|加|Canada|Canadian"
+          ]
+        }
+      ],
+      "url": "https://www.gstatic.com/generate_204",
+      "interval": "3m0s",
+      "tolerance": 50
+    },
+    {
+      "type": "urltest",
+      "tag": "auto-au",
+      "outbounds": [
+        "{all}"
+      ],
+      "filter": [
+        {
+          "action": "include",
+          "keywords": [
+            "🇦🇺|AU|au|澳大利亚|澳|Australia|Australian"
+          ]
+        }
+      ],
+      "url": "https://www.gstatic.com/generate_204",
+      "interval": "3m0s",
+      "tolerance": 50
+    },
+    {
+      "type": "urltest",
+      "tag": "auto-in",
+      "outbounds": [
+        "{all}"
+      ],
+      "filter": [
+        {
+          "action": "include",
+          "keywords": [
+            "🇮🇳|IN|in|印度|印|India|Indian"
+          ]
+        }
+      ],
+      "url": "https://www.gstatic.com/generate_204",
+      "interval": "3m0s",
+      "tolerance": 50
+    },
+    {
+      "type": "urltest",
+      "tag": "auto-nl",
+      "outbounds": [
+        "{all}"
+      ],
+      "filter": [
+        {
+          "action": "include",
+          "keywords": [
+            "🇳🇱|NL|nl|荷兰|荷|Netherlands|Dutch|Amsterdam"
+          ]
+        }
+      ],
+      "url": "https://www.gstatic.com/generate_204",
+      "interval": "3m0s",
+      "tolerance": 50
+    },
+    {
+      "type": "urltest",
+      "tag": "auto-it",
+      "outbounds": [
+        "{all}"
+      ],
+      "filter": [
+        {
+          "action": "include",
+          "keywords": [
+            "🇮🇹|IT|it|意大利|意|Italy|Italian|Rome"
+          ]
+        }
+      ],
+      "url": "https://www.gstatic.com/generate_204",
+      "interval": "3m0s",
+      "tolerance": 50
+    },
+    {
+      "tag": "Others",
+      "type": "selector",
+      "outbounds": [
+        "{all}"
+      ],
+      "filter": [
+        {
+          "action": "exclude",
+          "keywords": [
+            "网站|地址|剩余|过期|时间|有效",
+            "🇭🇰|HK|hk|香港|港|Hong|HongKong",
+            "🇬🇧|GB|gb|UK|uk|英国|英|伦敦|Britain|eng|United Kingdom",
+            "🇸🇬|SG|sg|新加坡|狮|坡|Singapore",
+            "🇨🇳|🇹🇼|CN|China|TW|tw|中国|台湾|臺灣|台|Taiwan",
+            "🇯🇵|JP|jp|日本|日|Japan|Tokyo",
+            "🇺🇸|US|us|美国|美|United States|States|American",
+            "🇩🇪|DE|de|德国|德|Germany|German",
+            "🇷🇺|RU|ru|俄罗斯|俄|Russia|Russian|Moscow",
+            "🇰🇷|KR|kr|韩国|韩|Korea|Korean|Seoul",
+            "🇫🇷|FR|fr|法国|法|France|French|Paris",
+            "🇨🇦|CA|ca|加拿大|加|Canada|Canadian",
+            "🇦🇺|AU|au|澳大利亚|澳|Australia|Australian",
+            "🇮🇳|IN|in|印度|印|India|Indian",
+            "🇳🇱|NL|nl|荷兰|荷|Netherlands|Dutch|Amsterdam",
+            "🇮🇹|IT|it|意大利|意|Italy|Italian|Rome"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "direct",
+      "tag": "direct"
+    }
+  ],
+  "route": {
+    "rules": [
+      {
+        "inbound": [
+          "tun-in",
+          "http-in",
+          "socks-in",
+          "mixed-in"
+        ],
+        "action": "sniff"
+      },
+      {
+        "protocol": "dns",
+        "action": "hijack-dns"
+      },
+      {
+        "clash_mode": "Global",
+        "outbound": "Proxy"
+      },
+      {
+        "rule_set": "geosite-geolocation-!cn",
+        "outbound": "Proxy"
+      },
+      {
+        "domain_suffix": "ifconfig.me",
+        "outbound": "Manually"
+      },
+      {
+        "port": 22,
+        "outbound": "Manually"
+      },
+      {
+        "domain_suffix": "openai.com",
+        "outbound": "Scholar"
+      },
+      {
+        "rule_set": [
+          "geosite-google-scholar",
+          "geosite-category-scholar-!cn"
+        ],
+        "outbound": "Scholar"
+      },
+      {
+        "domain_suffix": "ip.sb",
+        "outbound": "Express"
+      },
+      {
+        "domain_keyword": [
+          "cdn",
+          "download"
+        ],
+        "outbound": "Express"
+      },
+      {
+        "rule_set": [
+          "geosite-youtube",
+          "geosite-google",
+          "geosite-github",
+          "geosite-category-porn",
+          "geosite-category-cryptocurrency",
+          "geosite-category-entertainment"
+        ],
+        "outbound": "Express"
+      },
+      {
+        "rule_set": "geosite-telegram",
+        "outbound": "Telegram"
+      },
+      {
+        "rule_set": "geosite-twitter",
+        "outbound": "Twitter"
+      },
+      {
+        "rule_set": "geosite-facebook",
+        "outbound": "Facebook"
+      },
+      {
+        "rule_set": "geosite-bilibili",
+        "outbound": "BiliBili"
+      },
+      {
+        "rule_set": "geosite-bahamut",
+        "outbound": "Bahamut"
+      },
+      {
+        "rule_set": "geosite-spotify",
+        "outbound": "Spotify"
+      },
+      {
+        "rule_set": "geosite-tiktok",
+        "outbound": "TikTok"
+      },
+      {
+        "rule_set": "geosite-netflix",
+        "outbound": "Netflix"
+      },
+      {
+        "rule_set": "geosite-disney",
+        "outbound": "Disney+"
+      },
+      {
+        "rule_set": [
+          "geosite-apple",
+          "geosite-amazon"
+        ],
+        "outbound": "Apple"
+      },
+      {
+        "rule_set": "geosite-microsoft",
+        "outbound": "Microsoft"
+      },
+      {
+        "rule_set": [
+          "geosite-category-games",
+          "geosite-dmm"
+        ],
+        "outbound": "Games"
+      },
+      {
+        "rule_set": [
+          "geosite-hbo",
+          "geosite-primevideo"
+        ],
+        "outbound": "Streaming"
+      },
+      {
+        "rule_set": "geosite-geolocation-!cn",
+        "outbound": "Global"
+      },
+      {
+        "rule_set": "geosite-cn",
+        "outbound": "China"
+      },
+      {
+        "rule_set": "geoip-cn",
+        "outbound": "China"
+      },
+      {
+        "ip_is_private": true,
+        "outbound": "direct"
+      },
+      {
+        "clash_mode": "Direct",
+        "outbound": "direct"
+      },
+      {
+        "rule_set": "geoip-cn",
+        "outbound": "direct"
+      },
+      {
+        "rule_set": "geosite-cn",
+        "outbound": "direct"
+      },
+      {
+        "domain": [
+          "clash.razord.top",
+          "yacd.metacubex.one",
+          "yacd.haishan.me",
+          "d.metacubex.one"
+        ],
+        "outbound": "direct"
+      },
+      {
+        "domain_suffix": [
+          ".cn",
+          ".gov.cn",
+          ".bilibili.com",
+          ".qq.com",
+          ".taobao.com",
+          ".jd.com",
+          ".baidu.com",
+          ".163.com"
+        ],
+        "outbound": "direct"
+      },
+      {
+        "port": [
+          25,
+          26,
+          222,
+          465,
+          587
+        ],
+        "outbound": "direct"
+      }
+    ],
+    "rule_set": [
+      {
+        "type": "remote",
+        "tag": "geosite-cn",
+        "format": "binary",
+        "url": "https://mirror.ghproxy.com/https://raw.githubusercontent.com/SagerNet/sing-geosite/refs/heads/rule-set/geosite-cn.srs",
+        "download_detour": "direct",
+        "update_interval": "2m0s"
+      },
+      {
+        "type": "remote",
+        "tag": "geosite-geolocation-!cn",
+        "format": "binary",
+        "url": "https://ghproxy.cn/https://raw.githubusercontent.com/SagerNet/sing-geosite/refs/heads/rule-set/geosite-geolocation-!cn.srs",
+        "download_detour": "direct",
+        "update_interval": "2m0s"
+      },
+      {
+        "type": "remote",
+        "tag": "geoip-cn",
+        "format": "binary",
+        "url": "https://mirror.ghproxy.com/https://raw.githubusercontent.com/SagerNet/sing-geoip/refs/heads/rule-set/geoip-cn.srs",
+        "download_detour": "direct",
+        "update_interval": "2m0s"
+      },
+      {
+        "type": "remote",
+        "tag": "geosite-google-scholar",
+        "format": "binary",
+        "url": "https://ghproxy.cn/https://raw.githubusercontent.com/SagerNet/sing-geosite/refs/heads/rule-set/geosite-google-scholar.srs",
+        "download_detour": "direct",
+        "update_interval": "2m0s"
+      },
+      {
+        "type": "remote",
+        "tag": "geosite-category-scholar-!cn",
+        "format": "binary",
+        "url": "https://mirror.ghproxy.com/https://raw.githubusercontent.com/SagerNet/sing-geosite/refs/heads/rule-set/geosite-category-scholar-!cn.srs",
+        "download_detour": "direct",
+        "update_interval": "2m0s"
+      },
+      {
+        "type": "remote",
+        "tag": "geosite-youtube",
+        "format": "binary",
+        "url": "https://ghproxy.cn/https://raw.githubusercontent.com/SagerNet/sing-geosite/refs/heads/rule-set/geosite-youtube.srs",
+        "download_detour": "direct",
+        "update_interval": "2m0s"
+      },
+      {
+        "type": "remote",
+        "tag": "geosite-google",
+        "format": "binary",
+        "url": "https://mirror.ghproxy.com/https://raw.githubusercontent.com/SagerNet/sing-geosite/refs/heads/rule-set/geosite-google.srs",
+        "download_detour": "direct",
+        "update_interval": "2m0s"
+      },
+      {
+        "type": "remote",
+        "tag": "geosite-github",
+        "format": "binary",
+        "url": "https://ghproxy.cn/https://raw.githubusercontent.com/SagerNet/sing-geosite/refs/heads/rule-set/geosite-github.srs",
+        "download_detour": "direct",
+        "update_interval": "2m0s"
+      },
+      {
+        "type": "remote",
+        "tag": "geosite-category-porn",
+        "format": "binary",
+        "url": "https://mirror.ghproxy.com/https://raw.githubusercontent.com/SagerNet/sing-geosite/refs/heads/rule-set/geosite-category-porn.srs",
+        "download_detour": "direct",
+        "update_interval": "2m0s"
+      },
+      {
+        "type": "remote",
+        "tag": "geosite-category-cryptocurrency",
+        "format": "binary",
+        "url": "https://ghproxy.cn/https://raw.githubusercontent.com/SagerNet/sing-geosite/refs/heads/rule-set/geosite-category-cryptocurrency.srs",
+        "download_detour": "direct",
+        "update_interval": "2m0s"
+      },
+      {
+        "type": "remote",
+        "tag": "geosite-category-entertainment",
+        "format": "binary",
+        "url": "https://mirror.ghproxy.com/https://raw.githubusercontent.com/SagerNet/sing-geosite/refs/heads/rule-set/geosite-category-entertainment.srs",
+        "download_detour": "direct",
+        "update_interval": "2m0s"
+      },
+      {
+        "type": "remote",
+        "tag": "geosite-telegram",
+        "format": "binary",
+        "url": "https://ghproxy.cn/https://raw.githubusercontent.com/SagerNet/sing-geosite/refs/heads/rule-set/geosite-telegram.srs",
+        "download_detour": "direct",
+        "update_interval": "2m0s"
+      },
+      {
+        "type": "remote",
+        "tag": "geosite-twitter",
+        "format": "binary",
+        "url": "https://mirror.ghproxy.com/https://raw.githubusercontent.com/SagerNet/sing-geosite/refs/heads/rule-set/geosite-twitter.srs",
+        "download_detour": "direct",
+        "update_interval": "2m0s"
+      },
+      {
+        "type": "remote",
+        "tag": "geosite-facebook",
+        "format": "binary",
+        "url": "https://ghproxy.cn/https://raw.githubusercontent.com/SagerNet/sing-geosite/refs/heads/rule-set/geosite-facebook.srs",
+        "download_detour": "direct",
+        "update_interval": "2m0s"
+      },
+      {
+        "type": "remote",
+        "tag": "geosite-bilibili",
+        "format": "binary",
+        "url": "https://mirror.ghproxy.com/https://raw.githubusercontent.com/SagerNet/sing-geosite/refs/heads/rule-set/geosite-bilibili.srs",
+        "download_detour": "direct",
+        "update_interval": "2m0s"
+      },
+      {
+        "type": "remote",
+        "tag": "geosite-bahamut",
+        "format": "binary",
+        "url": "https://ghproxy.cn/https://raw.githubusercontent.com/SagerNet/sing-geosite/refs/heads/rule-set/geosite-bahamut.srs",
+        "download_detour": "direct",
+        "update_interval": "2m0s"
+      },
+      {
+        "type": "remote",
+        "tag": "geosite-spotify",
+        "format": "binary",
+        "url": "https://mirror.ghproxy.com/https://raw.githubusercontent.com/SagerNet/sing-geosite/refs/heads/rule-set/geosite-spotify.srs",
+        "download_detour": "direct",
+        "update_interval": "2m0s"
+      },
+      {
+        "type": "remote",
+        "tag": "geosite-tiktok",
+        "format": "binary",
+        "url": "https://ghproxy.cn/https://raw.githubusercontent.com/SagerNet/sing-geosite/refs/heads/rule-set/geosite-tiktok.srs",
+        "download_detour": "direct",
+        "update_interval": "2m0s"
+      },
+      {
+        "type": "remote",
+        "tag": "geosite-netflix",
+        "format": "binary",
+        "url": "https://mirror.ghproxy.com/https://raw.githubusercontent.com/SagerNet/sing-geosite/refs/heads/rule-set/geosite-netflix.srs",
+        "download_detour": "direct",
+        "update_interval": "2m0s"
+      },
+      {
+        "type": "remote",
+        "tag": "geosite-disney",
+        "format": "binary",
+        "url": "https://ghproxy.cn/https://raw.githubusercontent.com/SagerNet/sing-geosite/refs/heads/rule-set/geosite-disney.srs",
+        "download_detour": "direct",
+        "update_interval": "2m0s"
+      },
+      {
+        "type": "remote",
+        "tag": "geosite-apple",
+        "format": "binary",
+        "url": "https://mirror.ghproxy.com/https://raw.githubusercontent.com/SagerNet/sing-geosite/refs/heads/rule-set/geosite-apple.srs",
+        "download_detour": "direct",
+        "update_interval": "2m0s"
+      },
+      {
+        "type": "remote",
+        "tag": "geosite-amazon",
+        "format": "binary",
+        "url": "https://ghproxy.cn/https://raw.githubusercontent.com/SagerNet/sing-geosite/refs/heads/rule-set/geosite-amazon.srs",
+        "download_detour": "direct",
+        "update_interval": "2m0s"
+      },
+      {
+        "type": "remote",
+        "tag": "geosite-microsoft",
+        "format": "binary",
+        "url": "https://mirror.ghproxy.com/https://raw.githubusercontent.com/SagerNet/sing-geosite/refs/heads/rule-set/geosite-microsoft.srs",
+        "download_detour": "direct",
+        "update_interval": "2m0s"
+      },
+      {
+        "type": "remote",
+        "tag": "geosite-category-games",
+        "format": "binary",
+        "url": "https://ghproxy.cn/https://raw.githubusercontent.com/SagerNet/sing-geosite/refs/heads/rule-set/geosite-category-games.srs",
+        "download_detour": "direct",
+        "update_interval": "2m0s"
+      },
+      {
+        "type": "remote",
+        "tag": "geosite-dmm",
+        "format": "binary",
+        "url": "https://mirror.ghproxy.com/https://raw.githubusercontent.com/SagerNet/sing-geosite/refs/heads/rule-set/geosite-dmm.srs",
+        "download_detour": "direct",
+        "update_interval": "2m0s"
+      },
+      {
+        "type": "remote",
+        "tag": "geosite-hbo",
+        "format": "binary",
+        "url": "https://ghproxy.cn/https://raw.githubusercontent.com/SagerNet/sing-geosite/refs/heads/rule-set/geosite-hbo.srs",
+        "download_detour": "direct",
+        "update_interval": "2m0s"
+      },
+      {
+        "type": "remote",
+        "tag": "geosite-primevideo",
+        "format": "binary",
+        "url": "https://mirror.ghproxy.com/https://raw.githubusercontent.com/SagerNet/sing-geosite/refs/heads/rule-set/geosite-primevideo.srs",
+        "download_detour": "direct",
+        "update_interval": "2m0s"
+      }
+    ],
+    "final": "Proxy",
+    "auto_detect_interface": true
+  },
+  "experimental": {
+    "cache_file": {
+      "enabled": true,
+      "path": "sb.db",
+      "cache_id": "sb",
+      "store_fakeip": true
+    },
+    "clash_api": {
+      "external_controller": ":7900",
+      "external_ui": "ui",
+      "external_ui_download_url": "https://mirror.ghproxy.com/https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
+      "external_ui_download_detour": "direct",
+      "default_mode": "rule"
+    }
+  }
+}

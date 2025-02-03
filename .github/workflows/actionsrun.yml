@@ -1,0 +1,72 @@
+name: Deploy Images to GHCR CI
+
+# 配置触发条件
+on:
+  # Triggers the workflow on push or pull request events but only for the "master" branch
+  # Runs every 5 minutes.
+  # Runs at 00:00 UTC every day.
+  # Actions schedules run at most every 5 minutes.
+  # schedule:
+    # - cron: '*/5 * * * *'
+    # - cron: '55 */8 * * *'
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+    
+# 自定义环境变量，有风险危险调用，有什么私密变量请不要定义在这里
+env:
+  REGISTRY: ghcr.io
+  IMAGE: ${{ github.actor }}/docker-arch-sub-topfreeproxies
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    # 配置 QEMU 
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v3
+    # 配置 buildx 用于多架构镜像的构建
+    - name: Set up Docker Buildx
+      id: buildx
+      uses: docker/setup-buildx-action@v3
+    # 打印 builder 支持信息
+    - name: Inspect builder
+      run: |
+        echo "Name:      ${{ steps.buildx.outputs.name }}"
+        echo "Endpoint:  ${{ steps.buildx.outputs.endpoint }}"
+        echo "Status:    ${{ steps.buildx.outputs.status }}"
+        echo "Flags:     ${{ steps.buildx.outputs.flags }}"
+        echo "Platforms: ${{ steps.buildx.outputs.platforms }}"
+    # 登录 docker 仓库
+    - name: Login to GitHub Container Registry
+      uses: docker/login-action@v3
+      with:
+        registry: ${{ env.REGISTRY }}
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    # 运行docker镜像测试
+    - name: Run Docker Image
+      run: |
+        docker run --platform linux/amd64 -v './topfreeproxies:/topfreeproxies' ${{ env.REGISTRY }}/$(echo ${{ env.IMAGE }} | tr A-Z a-z):latest
+    # 获取当前时间
+    - name: 'Get Date'
+      run: |
+        echo "REPORT_DATE=$(TZ=':Asia/Shanghai' date '+%Y-%m-%d %T')" >> $GITHUB_ENV
+    # 提交docker生成的更新文件修改信息
+    - name: 提交更改
+      run: |
+        git config --local user.email "actions@github.com"
+        git config --local user.name "GitHub Actions"
+        git checkout --orphan new-branch
+        git add . 
+        git commit -a -m "${{env.REPORT_DATE}} 提交"
+        git branch -D master
+        git branch -m master
+        git push -u origin master --force
+    # push docker 容器的更新文件
+    - name: 推送更改
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{secrets.GITHUB_TOKEN}}
+        branch: master
+        force: true

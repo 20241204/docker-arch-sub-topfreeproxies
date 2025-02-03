@@ -1,0 +1,31 @@
+services:
+  sub-topfreeproxies-app:
+    build:
+      context: .
+    command:
+        - "bash"
+        - "-c"
+        - "cd /topfreeproxies ; sudo bash start.sh"
+    platform: linux/amd64
+    container_name: docker-container-sub-topfreeproxies-latest
+    #environment:
+      #- HTTP_PROXY=http://IP:PORT
+      #- HTTPS_PROXY=http://IP:PORT
+      #- ALL_PROXY=socks5://IP:PORT
+    image: ghcr.io/20241204/docker-arch-sub-topfreeproxies:latest
+    #network_mode: bridge
+    networks:
+      - app-net
+    privileged: true
+    restart: "no"
+    logging:
+      driver: json-file
+      options:
+        max-size: 1m
+    volumes:
+        - ./topfreeproxies:/topfreeproxies
+networks:
+  app-net:
+    #driver: host
+    driver: bridge
+    #external: true

@@ -1,0 +1,6 @@
+time="2025-02-03T23:01:13.031874137+08:00" level=info msg="Can't find config, create a initial config file"
+time="2025-02-03T23:01:13.032089679+08:00" level=info msg="Start initial configuration in progress"
+time="2025-02-03T23:01:13.033530137+08:00" level=info msg="Geodata Loader mode: memconservative"
+time="2025-02-03T23:01:13.033601012+08:00" level=info msg="Geosite Matcher implementation: succinct"
+time="2025-02-03T23:01:13.035738054+08:00" level=info msg="Initial configuration complete, total time: 3ms"
+configuration file /root/.config/mihomo/config.yaml test is successful
